@@ -1,8 +1,6 @@
 // Source: e ListLinks.java sample code from jsoup is
 // https://github.com/jhy/jsoup/blob/master/src/main/java/org/jsoup/examples/ListLinks.java
 
-package org.jsoup.examples;
-
 import org.jsoup.Jsoup;
 import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document;
@@ -18,34 +16,15 @@ import java.io.IOException;
  <p><code>java -cp jsoup-examples.jar org.jsoup.examples.ListLinks url</code></p>
  where <i>url</i> is the URL to fetch.
  */
-public class ListLinks {
+public class Part1ListLinks {
     public static void main(String[] args) throws IOException {
         Validate.isTrue(args.length == 1, "usage: supply url to fetch");
         String url = args[0];
         print("Fetching %s...", url);
 
-        // Force the legacy transport on newer jsoup/JDK combos where HttpClient
-        // can be blocked by local policy even though plain URL connections work.
-        System.setProperty("jsoup.useHttpClient", "false");
         Document doc = Jsoup.connect(url).get();
         Elements links = doc.select("a[href]");
-        Elements media = doc.select("[src]");
-        Elements imports = doc.select("link[href]");
 
-        print("\nMedia: (%d)", media.size());
-        for (Element src : media) {
-            if (src.nameIs("img"))
-                print(" * %s: <%s> %sx%s (%s)",
-                        src.tagName(), src.attr("abs:src"), src.attr("width"), src.attr("height"),
-                        trim(src.attr("alt"), 20));
-            else
-                print(" * %s: <%s>", src.tagName(), src.attr("abs:src"));
-        }
-
-        print("\nImports: (%d)", imports.size());
-        for (Element link : imports) {
-            print(" * %s <%s> (%s)", link.tagName(),link.attr("abs:href"), link.attr("rel"));
-        }
 
         print("\nLinks: (%d)", links.size());
         for (Element link : links) {
