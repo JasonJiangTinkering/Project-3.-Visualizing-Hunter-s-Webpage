@@ -16,7 +16,7 @@ import java.io.IOException;
  <p><code>java -cp jsoup-examples.jar org.jsoup.examples.ListLinks url</code></p>
  where <i>url</i> is the URL to fetch.
  */
-public class Part1ListLinks {
+public class Part2RefinedUrls {
     public static void main(String[] args) throws IOException {
         Validate.isTrue(args.length == 1, "usage: supply url to fetch");
         String url = args[0];
@@ -28,7 +28,34 @@ public class Part1ListLinks {
 
         print("\nLinks: (%d)", links.size());
         for (Element link : links) {
-            print(" * a: <%s>  (%s)", link.attr("abs:href"), trim(link.text(), 35));
+            String linkUrl = link.attr("abs:href");
+            String [] allowedPrefixes = {
+                    "https://www.hunter.cuny.edu",
+                    "https://www2.hunter.cuny.edu",
+
+                    "http://www.hunter.cuny.edu",
+                    "https://www2.hunter.cuny.edu",
+
+                    "https://www.hunter.cuny.edu",
+                    "https://www.hunter.cuny.edu",
+                    "https://www.hunter.cuny.edu",
+                    "https://www.hunter.cuny.edu",
+            };
+            // These urls dont have a lot of deviance, so a simple startsWith check is sufficient to filter out the bad urls
+            boolean allowed = false;
+            for (String prefix : allowedPrefixes) {
+                if (linkUrl.startsWith(prefix)) {
+                    allowed = true;
+                    break;
+                }
+            }
+
+            if (!allowed) {
+                // System.out.println("Bad url: " + linkUrl);
+                continue;
+            }
+            print("%s", "./" + linkUrl.substring(linkUrl.indexOf(".edu") + 4), "");
+            // print("%s", linkUrl,"");
         }
     }
 
